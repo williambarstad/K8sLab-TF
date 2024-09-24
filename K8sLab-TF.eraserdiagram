@@ -1,4 +1,4 @@
-VPC [icon: aws-vpc, label: "10.0.0.0/16"] {
+VPC [icon: aws-vpc, label: "10.0.0.0/16"] { 
   Internet Gateway [icon: aws-internet-gateway]
   NAT Gateway [icon: aws-nat-gateway]
 
@@ -21,6 +21,14 @@ VPC [icon: aws-vpc, label: "10.0.0.0/16"] {
     EKS Nodes [icon: aws-ec2] {
       Node Group 1 [icon: aws-ec2]
     }
+    Manager Role [icon: aws-iam-role] {
+      EKS Admin Policy [icon: aws-iam-policy]
+      Manager IAM User [icon: aws-iam-user]
+    }
+    Developer Role [icon: aws-iam-role] {
+      Developer Policy [icon: aws-iam-policy]
+      Developer IAM User [icon: aws-iam-user]
+    }
   }
 }
 
@@ -38,3 +46,5 @@ Public Subnet AZ2 > Public Route Table
 Private Subnet AZ1 > Private Route Table
 Private Subnet AZ2 > Private Route Table
 EKS Cluster > Private Subnet AZ1, Private Subnet AZ2
+Manager IAM User > EKS Cluster
+Developer IAM User > EKS Cluster
