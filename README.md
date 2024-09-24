@@ -1,7 +1,7 @@
 # K8sLab-TF (work-in-progress)
 Kubernetes lab using terraform; easily create and destroy your lab resources for testing and development.
 
-![K8sLab-basic](K8sLab-basic.png)
+![K8sLab-basic](K8sLab-basic1.png)
 
 ---
 # To Use This Lab
