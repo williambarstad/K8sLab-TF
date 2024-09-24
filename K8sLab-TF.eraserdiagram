@@ -1,35 +1,40 @@
-VPC [icon: aws-vpc] {
-    Internet Gateway [icon: aws-internet-gateway]
-    NAT Gateway [icon: aws-nat-gateway]
-  
-    Public Subnets [icon: aws-subnet] {
-      Public Subnet AZ1 [icon: aws-subnet]
-      Public Subnet AZ2 [icon: aws-subnet]
-    }
-  
-    Private Subnets [icon: aws-subnet] {
-      Private Subnet AZ1 [icon: aws-subnet]
-      Private Subnet AZ2 [icon: aws-subnet]
-    }
-  
-    Route Tables {
-      Public Route Table [icon: aws-route-table]
-      Private Route Table [icon: aws-route-table]
-    }
-  
-    EKS Cluster [icon: aws-eks] {
-      EKS Nodes [icon: aws-ec2] {
-        Node Group 1 [icon: aws-ec2]
-      }
+VPC [icon: aws-vpc, label: "10.0.0.0/16"] {
+  Internet Gateway [icon: aws-internet-gateway]
+  NAT Gateway [icon: aws-nat-gateway]
+
+  Public Subnets [icon: aws-subnet] {
+    Public Subnet AZ1 [icon: aws-subnet, label: "10.0.1.0/24"]
+    Public Subnet AZ2 [icon: aws-subnet, label: "10.0.3.0/24"]
+  }
+
+  Private Subnets [icon: aws-subnet] {
+    Private Subnet AZ1 [icon: aws-subnet, label: "10.0.2.0/24"]
+    Private Subnet AZ2 [icon: aws-subnet, label: "10.0.4.0/24"]
+  }
+
+  Route Tables {
+    Public Route Table [icon: aws-route-table, label: "0.0.0.0/0 -> IGW"]
+    Private Route Table [icon: aws-route-table, label: "0.0.0.0/0 -> NAT"]
+  }
+
+  EKS Cluster [icon: aws-eks] {
+    EKS Nodes [icon: aws-ec2] {
+      Node Group 1 [icon: aws-ec2]
     }
   }
-  
-  // Define connections
-  Internet Gateway > Public Subnet AZ1, Public Subnet AZ2
-  NAT Gateway > Private Subnet AZ1, Private Subnet AZ2
-  Public Subnet AZ1 > Public Route Table
-  Public Subnet AZ2 > Public Route Table
-  Private Subnet AZ1 > Private Route Table
-  Private Subnet AZ2 > Private Route Table
-  EKS Cluster > Private Subnet AZ1, Private Subnet AZ2
-  
+}
+
+Cloud [icon: cloud] {
+  External Internet [icon: cloud]
+}
+
+// Define connections
+External Internet > Internet Gateway
+NAT Gateway > External Internet
+Internet Gateway > Public Subnet AZ1, Public Subnet AZ2
+NAT Gateway > Private Subnet AZ1, Private Subnet AZ2
+Public Subnet AZ1 > Public Route Table
+Public Subnet AZ2 > Public Route Table
+Private Subnet AZ1 > Private Route Table
+Private Subnet AZ2 > Private Route Table
+EKS Cluster > Private Subnet AZ1, Private Subnet AZ2

@@ -1,0 +1,29 @@
+ Name                                                    Monthly Qty  Unit              Monthly Cost
+
+ aws_eks_cluster.eks
+ └─ EKS cluster                                                  730  hours                   $73.00
+
+ aws_eks_node_group.general
+ ├─ Instance usage (Linux/UNIX, on-demand, t3.large)             730  hours                   $60.74
+ └─ Storage (general purpose SSD, gp2)                            20  GB                       $2.00
+
+ aws_nat_gateway.nat
+ ├─ NAT gateway                                                  730  hours                   $32.85
+ └─ Data processed                                    Monthly cost depends on usage: $0.045 per GB
+
+ OVERALL TOTAL                                                                              $168.59
+
+*Usage costs can be estimated by updating Infracost Cloud settings, see docs for other options.
+
+──────────────────────────────────
+29 cloud resources were detected:
+∙ 3 were estimated
+∙ 24 were free
+∙ 2 are not supported yet, rerun with --show-skipped to see details
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━┓━━━━━━━━━━━━━━┓
+┃ Project                                ┃ Baseline cost ┃ Usage cost* ┃ Month cost ┃ Hourly Cost  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━╋━━━━━━━━━━━━┫━━━━━━━━━━━━━━┫
+┃ main                                   ┃          $169 ┃           - ┃       $169 ┃       $0.24  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━┛━━━━━━━━━━━━━━┛
+
