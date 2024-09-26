@@ -1,6 +1,6 @@
 # IAM Role for EKS Worker Nodes
 resource "aws_iam_role" "nodes" {
-  name = "${var.env}-${var.eks_name}-eks-nodes"
+  name = "${local.env}-${local.eks_name}-eks-nodes"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -24,14 +24,14 @@ resource "aws_iam_role" "nodes" {
 
 # EKS Node Group (Worker Nodes)
 resource "aws_eks_node_group" "general" {
-  cluster_name    = var.eks_name
-  version         = var.eks_version
-  node_group_name = var.node_group_name
+  cluster_name    = aws_eks_cluster.eks.name
+  version         = local.eks_version
+  node_group_name = "general"
   node_role_arn   = aws_iam_role.nodes.arn
 
   subnet_ids = [
-    var.private_subnet_az1.id,
-    var.private_subnet_az2.id
+    aws_subnet.private_subnet_az1.id,
+    aws_subnet.private_subnet_az2.id
   ]
 
   capacity_type = local.capacity_type
@@ -46,9 +46,9 @@ resource "aws_eks_node_group" "general" {
   update_config {
     max_unavailable = local.max_unavailable
   }
-
+  
   labels = {
-    role = local.node_group_name
+    role = aws_eks_cluster.eks.name
   }
 
   lifecycle {
@@ -56,6 +56,6 @@ resource "aws_eks_node_group" "general" {
   }
 
   tags = {
-    Name = "eks-${local.node_group_name}-node-group"
+    Name = aws_eks_cluster.eks.name
   }
 }
