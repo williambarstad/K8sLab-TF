@@ -34,34 +34,28 @@ resource "aws_eks_node_group" "general" {
     aws_subnet.private_subnet_az2.id
   ]
 
-  capacity_type = "ON_DEMAND"
-  instance_types = ["t3.large"]
+  capacity_type = local.capacity_type
+  instance_types = [local.node_instance_type]
 
   scaling_config {
-    desired_size = 1
-    max_size     = 10
-    min_size     = 0
+    desired_size = local.desired_cluster_size
+    max_size     = local.max_cluster_size
+    min_size     = local.min_cluster_size
   }
 
   update_config {
-    max_unavailable = 1
+    max_unavailable = local.max_unavailable
   }
-
+  
   labels = {
-    role = "general"
+    role = aws_eks_cluster.eks.name
   }
-
-#   depends_on = [ 
-#     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
-#     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
-#     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy
-#    ]
 
   lifecycle {
     ignore_changes = [scaling_config[0].desired_size]
   }
 
   tags = {
-    Name = "eks-node-group"
+    Name = aws_eks_cluster.eks.name
   }
 }

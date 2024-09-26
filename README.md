@@ -1,96 +1,156 @@
-# K8sLab-TF (work-in-progress)
-Kubernetes lab using terraform; easily create and destroy your lab resources for testing and development.
 
-![K8sLab-basic](K8sLab-basic1.png)
+# K8sLab-TF (Work-in-progress)
+
+Kubernetes lab using Terraform; easily create and destroy your lab resources for testing and development.
+
+![K8sLab-basic](./docs/K8sLab-basic1.png)
 
 ---
-# To Use This Lab
 
-* Fork a local copy
-* Create the following files with the listed attributes:
-  - **locals.tf** (example):
-    ```
-    locals {
-      env    = "staging"
-      region = "us-west-2"
-      zone1  = "us-west-2a"
-      zone2  = "us-west-2b"
-      eks_name = "eks-${local.env}"
-      eks_version = "1.30"
-      ami_name = "<AMI_NAME>"
-    }
-    ```
-  - **providers.tf** (example): 
-    ```
-    terraform {
-      required_providers {
-        aws = {
-          source  = "hashicorp/aws"
-          version = "~> 5.0"
-        }
+## Overview
+
+This project allows you to quickly set up a Kubernetes cluster on AWS EKS using Terraform. It's designed to create resources in a modular, scalable way for testing and development purposes.
+
+---
+
+## Prerequisites
+
+* Install **Terraform** and **Kubectl** on your local machine.
+* Set up **AWS CLI** and configure your credentials:
+  - Ensure you have `~/.aws/config` and `~/.aws/credentials` files set up properly.
+  - You'll need an AWS account and an IAM user with sufficient permissions to create resources like EKS clusters, subnets, and VPCs.
+
+---
+
+## Setup Instructions
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. **Create the following files**:
+   
+   - **locals.tf** (example):
+     ```hcl
+     locals {
+        instance_profile      = "<PROFILE_NAME>"
+        env                   = "dev"
+        region                = "us-west-2"
+        azone1                = "us-west-2a"
+        azone2                = "us-west-2b"
+        eks_name              = "eks-${local.env}"
+        eks_version           = "1.30"
+        node_instance_type    = "t3a.medium"
+        desired_cluster_size  = 1
+        min_cluster_size      = 0
+        max_cluster_size      = 10
+        max_unavailable       = 1
+        capacity_type         = "ON_DEMAND"
+     }
+     ```
+
+   - **variables.tf** (example):
+     ```
+      variable "ami_name" {
+        description = "The name of the AMI to use for the EKS nodes"
+        default = "<AMI_NAME>"
       }
-    }
 
-    provider "aws" {
-      region                   = local.region
-      shared_config_files      = ["~/.aws/config"]
-      shared_credentials_files = ["~/.aws/credentials"]
-      profile                  = "<PROFILE_NAME>"
-    }
-    ---
-* 
-# RBACLab
-RBAC (Role-Based Access Control) is a method to regulate access to resources based on the roles assigned to users, groups, or service accounts.
-* Adding IAM Developer and Manger Roles
-    - **add-developer-user.tf**
-    - **add-manager-role.tf**
-* **admin-cluster-role-binding.yaml**: This ClusterRoleBinding assigns the powerful cluster-admin ClusterRole to the group wjb-admin. This grants full administrative privileges over the entire cluster to the members of the wjb-admin group. This is a critical binding and should be limited to trusted users who require full control over the Kubernetes cluster.
-* **viewer-cluster-role-binding.yaml**: This ClusterRoleBinding assigns the viewer ClusterRole to the group wjb-viewer. This ensures that all members of the wjb-viewer group have read-only access to the resources defined in the viewer ClusterRole across the cluster. It’s a solid setup for a group requiring visibility but no modification rights.
-* **viewer-cluster-role.yaml**: This ClusterRole is well-designed for users or service accounts needing read-only access to these resources across the cluster. It does not allow modifications (e.g., creating or deleting resources), which maintains security while providing visibility into the cluster.
+      variable "vpc_cidr" {
+        description = "The CIDR block for the VPC"
+        default = "10.0.0.0/16"
+      }
+
+      # Subnet variables
+      variable "public_subnet_cidr_az1" {
+        default = "10.0.1.0/24"
+      }
+
+      variable "private_subnet_cidr_az1" {
+        default = "10.0.2.0/24"
+      }
+
+      variable "public_subnet_cidr_az2" {
+        default = "10.0.3.0/24"
+      }
+
+      variable "private_subnet_cidr_az2" {
+        default = "10.0.4.0/24"
+      }
+     ```
+
+3. **Initialize the project with Terraform**:
+   ```bash
+   terraform init
+   ```
+
+4. **Check your work**:
+   ```bash
+   terraform plan
+   ```
+
+5. **Deploy your cluster**:
+   ```bash
+   terraform apply
+   ```
+
+6. **Confirm the cluster is running**:
+   ```bash
+   aws eks describe-cluster --name <cluster-name> --query "cluster.status"
+   ```
+
+7. **Confirm admin access to the cluster**:
+   ```bash
+   kubectl auth can-i "*" "*"
+   ```
+
+8. **Add a node group**:
+   ```bash
+   aws eks update-kubeconfig --region us-west-2 --name <cluster-name>
+   ```
+
+9. **Confirm node creation**:
+   ```bash
+   kubectl get nodes
+   ```
 
 ---
 
-# HPALab
-* Adding a Horizontal Pod Autoscaler
+## Tools Used in This Project
+
+* **HashiCorp Terraform**
+* **Kubernetes**
+* **AWS EKS**
+* **Eraser**
+* **Infracost**
+* **Copilot**
+* **ChatGPT**
 
 ---
 
-# Tools used on this project
-* Hashicorp Terraform
-* Kubernetes
-* EKS
-* Eraser
-* Infracost
-* Copilot
-* ChatGPT
+## AWS Cost Breakdown
 
----
+This section provides an estimated cost breakdown for running this lab on AWS. Estimates are provided by **Infracost**.
 
-# AWS Cost Breakdown
-## Usage Estimation
-> Estimates by Infracost.
+### Usage Estimation
 
-## Resources
+> Estimates generated by Infracost.
 
-| Name                           | Monthly Qty | Unit   | Monthly Cost |
-|---------------------------------|-------------|--------|--------------|
-| **aws_eks_cluster.eks**         | 730         | Hours  | $73.00       |
-| **aws_eks_node_group.general**  | 730         | Hours  | $60.74       |
-| - Instance usage (t3.large)     |             |        |              |
-| - Storage (gp2, 20 GB)          | 20          | GB     | $2.00        |
-| **aws_nat_gateway.nat**         | 730         | Hours  | $32.85       |
-| - Data processed (depends on usage) |         |        | $0.045/GB    |
+### Key Resources and Monthly Costs
 
-| Overall Total                   | Monthly Qty | Unit   | Monthly Cost |
-|---------------------------------|-------------|--------|--------------|
-| **aws_eks_cluster.eks**         | 730         | Hours  | $73.00       |
+| Resource                         | Monthly Qty | Unit   | Monthly Cost |
+|-----------------------------------|-------------|--------|--------------|
+| **aws_eks_cluster.eks**           | 730         | Hours  | $73.00       |
+| **aws_eks_node_group.general**    | 730         | Hours  | $60.74       |
+| - Instance usage (t3.large)       |             |        |              |
+| - Storage (gp2, 20 GB)            | 20          | GB     | $2.00        |
+| **aws_nat_gateway.nat**           | 730         | Hours  | $32.85       |
+| - Data processed (depends on usage) |           |        | $0.045/GB    |
 
+### Total Monthly Estimate
 | Project | Baseline Cost | Usage Cost | Monthly Cost | Hourly Cost |
 |---------|---------------|------------|--------------|-------------|
-| main    | $169          | N/A        | $169         | $0.24       |
+| main    | $169          | N/A        |       $169   |       $0.24 |
+---------------------------------------------------------------------
 
-| Resource Summary            | **Total resources detected:** |
-|-----------------------------|-------------------------------|
-|  - 3 were estimated         |                          29   |
-|  - 24 were free             |                               |
-|  - 2 are not supported yet  |                               |
