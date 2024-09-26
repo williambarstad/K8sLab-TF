@@ -6,6 +6,7 @@ Kubernetes lab using terraform; easily create and destroy your lab resources for
 ---
 # To Use This Lab
 
+* Install Terraform and Kubectl
 * Fork a local copy
 * Create the following files with the listed attributes:
   - **locals.tf** (example):
@@ -38,9 +39,39 @@ Kubernetes lab using terraform; easily create and destroy your lab resources for
       profile                  = "<PROFILE_NAME>"
     }
     ---
-* 
+* Initialize the project with Terraform:
+  ```
+  terraform init
+  ```
+* Check your work 
+  ```
+  terraform plan
+  ```
+* Deploy your cluster
+  ```
+  terraform apply
+  ```
+* Confirm the cluster is running
+  ```
+  aws eks describe-cluster --name <cluster-name> --query "cluster.status"
+  ```
+* Confirm Admin access to cluster
+  ```
+  kubectl auth can-i "*" "*"
+  ```
+* Add a node:
+  ```
+  aws eks update-kubeconfig \
+  --region us-west-2
+  --name <cluster-name>
+  ```
+* Confirm node was created
+  ```
+  kubectl get nodes
+  ```
+
 # RBACLab
-RBAC (Role-Based Access Control) is a method to regulate access to resources based on the roles assigned to users, groups, or service accounts.
+RBAC (Role-Based Access Control) is a method to regulate access to resources based on the roles assigned to users, groups, or service accounts In **Kubernetes**. Developer and Manager roles are also created in IAM that are bound to in the RBAC config files.
 * Adding IAM Developer and Manger Roles
     - **add-developer-user.tf**
     - **add-manager-role.tf**
@@ -94,3 +125,9 @@ RBAC (Role-Based Access Control) is a method to regulate access to resources bas
 |  - 3 were estimated         |                          29   |
 |  - 24 were free             |                               |
 |  - 2 are not supported yet  |                               |
+
+---
+
+# Acknowedgements
+## Anton Putra, AWS EKS Kubernetes Tutorial 
+https://www.youtube.com/playlist?list=PLiMWaCMwGJXnKY6XmeifEpjIfkWRo9v2l

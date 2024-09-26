@@ -3,7 +3,7 @@ data "aws_ami" "server_ami" {
   owners      = ["amazon"]
   filter {
     name   = "name"
-    values = ["${local.ami_name}"]
+    values = ["${var.ami_name}"]
   }
 }
 

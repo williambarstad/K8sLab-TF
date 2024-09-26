@@ -1,6 +1,6 @@
 # IAM Role for EKS Worker Nodes
 resource "aws_iam_role" "nodes" {
-  name = "${local.env}-${local.eks_name}-eks-nodes"
+  name = "${var.env}-${var.eks_name}-eks-nodes"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -24,44 +24,38 @@ resource "aws_iam_role" "nodes" {
 
 # EKS Node Group (Worker Nodes)
 resource "aws_eks_node_group" "general" {
-  cluster_name    = aws_eks_cluster.eks.name
-  version         = local.eks_version
-  node_group_name = "general"
+  cluster_name    = var.eks_name
+  version         = var.eks_version
+  node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.nodes.arn
 
   subnet_ids = [
-    aws_subnet.private_subnet_az1.id,
-    aws_subnet.private_subnet_az2.id
+    var.private_subnet_az1.id,
+    var.private_subnet_az2.id
   ]
 
-  capacity_type = "ON_DEMAND"
-  instance_types = ["t3.large"]
+  capacity_type = local.capacity_type
+  instance_types = [local.node_instance_type]
 
   scaling_config {
-    desired_size = 1
-    max_size     = 10
-    min_size     = 0
+    desired_size = local.desired_cluster_size
+    max_size     = local.max_cluster_size
+    min_size     = local.min_cluster_size
   }
 
   update_config {
-    max_unavailable = 1
+    max_unavailable = local.max_unavailable
   }
 
   labels = {
-    role = "general"
+    role = local.node_group_name
   }
-
-#   depends_on = [ 
-#     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
-#     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
-#     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy
-#    ]
 
   lifecycle {
     ignore_changes = [scaling_config[0].desired_size]
   }
 
   tags = {
-    Name = "eks-node-group"
+    Name = "eks-${local.node_group_name}-node-group"
   }
 }
