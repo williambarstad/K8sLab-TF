@@ -51,7 +51,7 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
      ```
 
    - **variables.tf** (example):
-     ```
+     ```hcl
       variable "ami_name" {
         description = "The name of the AMI to use for the EKS nodes"
         default = "<AMI_NAME>"
