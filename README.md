@@ -34,33 +34,50 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
    - **locals.tf** (example):
      ```hcl
      locals {
-       env         = "staging"
-       region      = "us-west-2"
-       zone1       = "us-west-2a"
-       zone2       = "us-west-2b"
-       eks_name    = "eks-${local.env}"
-       eks_version = "1.30"
-       ami_name    = "<AMI_NAME>"
+        instance_profile      = "<PROFILE_NAME>"
+        env                   = "dev"
+        region                = "us-west-2"
+        azone1                = "us-west-2a"
+        azone2                = "us-west-2b"
+        eks_name              = "eks-${local.env}"
+        eks_version           = "1.30"
+        node_instance_type    = "t3a.medium"
+        desired_cluster_size  = 1
+        min_cluster_size      = 0
+        max_cluster_size      = 10
+        max_unavailable       = 1
+        capacity_type         = "ON_DEMAND"
      }
      ```
 
-   - **providers.tf** (example):
-     ```hcl
-     terraform {
-       required_providers {
-         aws = {
-           source  = "hashicorp/aws"
-           version = "~> 5.0"
-         }
-       }
-     }
+   - **variables.tf** (example):
+     ```
+      variable "ami_name" {
+        description = "The name of the AMI to use for the EKS nodes"
+        default = "<AMI_NAME>"
+      }
 
-     provider "aws" {
-       region                   = local.region
-       shared_config_files      = ["~/.aws/config"]
-       shared_credentials_files = ["~/.aws/credentials"]
-       profile                  = "<PROFILE_NAME>"
-     }
+      variable "vpc_cidr" {
+        description = "The CIDR block for the VPC"
+        default = "10.0.0.0/16"
+      }
+
+      # Subnet variables
+      variable "public_subnet_cidr_az1" {
+        default = "10.0.1.0/24"
+      }
+
+      variable "private_subnet_cidr_az1" {
+        default = "10.0.2.0/24"
+      }
+
+      variable "public_subnet_cidr_az2" {
+        default = "10.0.3.0/24"
+      }
+
+      variable "private_subnet_cidr_az2" {
+        default = "10.0.4.0/24"
+      }
      ```
 
 3. **Initialize the project with Terraform**:
@@ -97,30 +114,6 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
    ```bash
    kubectl get nodes
    ```
-
----
-
-## RBACLab (Role-Based Access Control)
-
-RBAC (Role-Based Access Control) is a method to regulate access to resources based on the roles assigned to users, groups, or service accounts in **Kubernetes**. This project includes Terraform code to set up IAM Developer and Manager roles, which are then bound to Kubernetes RBAC config files.
-
-### RBAC Roles:
-* **IAM Developer Role**: Bound to a Developer role in Kubernetes, granting limited access for development tasks.
-* **IAM Manager Role**: Bound to a Manager role, providing more extensive access to manage the cluster.
-  
-For managing these roles:
-- Terraform files for creating roles:
-  - **add-developer-user.tf**
-  - **add-manager-role.tf**
-  
-- RBAC role binding files:
-  - **admin-cluster-role-binding.yaml**
-
----
-
-## Horizontal Pod Autoscaler Lab (HPALab)
-
-This section of the project adds a **Horizontal Pod Autoscaler** to automatically scale the number of pods in your cluster based on CPU usage or other metrics.
 
 ---
 
