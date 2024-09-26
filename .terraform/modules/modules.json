@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"eks","Source":"./modules/eks","Dir":"modules/eks"},{"Key":"nat","Source":"./modules/nat","Dir":"modules/nat"},{"Key":"nodes","Source":"./modules/nodes","Dir":"modules/nodes"},{"Key":"roles","Source":"./modules/roles","Dir":"modules/roles"},{"Key":"users","Source":"./modules/users","Dir":"modules/users"}]}
