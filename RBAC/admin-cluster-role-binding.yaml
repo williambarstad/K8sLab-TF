@@ -1,12 +1,14 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1  # Specifies the API version used for RBAC (Role-Based Access Control).
+kind: ClusterRoleBinding  # This defines the resource type as a ClusterRoleBinding, which binds a ClusterRole to users or groups across the entire cluster.
 metadata:
-  name: eks-admin-binding
+  name: eks-admin-binding  # The name of the ClusterRoleBinding. This is the identifier used to refer to this binding within the Kubernetes cluster.
+
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io  # The API group for RBAC resources.
+  kind: ClusterRole  # Refers to a ClusterRole, which defines the permissions to be applied.
+  name: cluster-admin  # The name of the ClusterRole being bound. In this case, it is binding the "cluster-admin" role, which grants full administrative privileges.
+
 subjects:
-- kind: Group
-  name: eks-admin
-  apiGroup: rbac.authorization.k8s.io
+- kind: Group  # Specifies the kind of subject being bound to the ClusterRole. In this case, it's a "Group."
+  name: eks-admin  # The name of the group being given permissions. This group should exist within your identity provider (e.g., IAM, Active Directory).
+  apiGroup: rbac.authorization.k8s.io  # The API group for the subject, used for RBAC resources.

@@ -119,12 +119,18 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
    ```bash
    kubectl get nodes
    ```
-11. **Add Developer Users and Management Roles**:
+11. **Add Developer Users and Management Roles (optional)**:
     * Uncomment and edit the commands in **add-developer-user.tf** and **add-manager-roles.tf**
+    * Run the RBAC yaml files using **kubectl**
+      ```bash
+      kubectl apply -f ./RBAC/admin-cluster-role-binding.yaml
+      kubectl apply -f ./RBAC/viewer-cluster-role-binding.yaml
+      kubectl apply -f ./RBAC/viewer-cluster-role.yaml
+      ```
     * Apply them:
-    ```bash
-    terraform apply
-    ```
+      ```bash
+      terraform apply
+      ```
 
 ---
 
@@ -178,4 +184,5 @@ This section provides an estimated cost breakdown for running this lab on AWS. E
 
 # Acknowledgements
 ## Anton Putra https://www.youtube.com/@AntonPutra
-> Amazing EKS Tutorials
+> Amazing EKS Tutorials:
+> https://www.youtube.com/watch?v=ppJZ4m4t0bI&list=PLiMWaCMwGJXnKY6XmeifEpjIfkWRo9v2l
