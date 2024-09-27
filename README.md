@@ -1,5 +1,5 @@
 
-# K8sLab-TF (Work-in-progress)
+# K8sLab-TF 
 
 Kubernetes lab using Terraform; easily create and destroy your lab resources for testing and development.
 
@@ -51,7 +51,7 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
      ```
 
    - **variables.tf** (example):
-     ```
+     ```hcl
       variable "ami_name" {
         description = "The name of the AMI to use for the EKS nodes"
         default = "<AMI_NAME>"
@@ -117,6 +117,13 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
 
 ---
 
+## Upcoming Enhancements
+
+*  HPA (Horizontal Pod Autoscaler)
+*  Cluster Autoscaler
+*  AWS Load Balancer
+*  Nginx Ingress Controller
+
 ## Tools Used in This Project
 
 * **HashiCorp Terraform**
@@ -154,3 +161,6 @@ This section provides an estimated cost breakdown for running this lab on AWS. E
 | main    | $169          | N/A        |       $169   |       $0.24 |
 ---------------------------------------------------------------------
 
+# Acknowledgements
+## Anton Putra https://www.youtube.com/@AntonPutra
+> Amazing EKS Tutorials
