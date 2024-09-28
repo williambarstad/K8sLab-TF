@@ -1,7 +1,7 @@
 
-# K8sLab-TF 
+# K8sLab-ChocolateDoom-TF 
 
-Kubernetes lab using Terraform; easily create and destroy your lab resources for testing and development.
+Kubernetes lab serving Doom instances using Terraform using this easy to create and destroy K8s-EKS lab.
 
 ![K8sLab-basic](./docs/K8sLab-basic1.png)
 
