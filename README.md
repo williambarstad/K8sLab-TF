@@ -1,9 +1,9 @@
 
-# K8sLab-ChocolateDoom-TF 
+# K8sLab-TF 
 
 Kubernetes lab serving Doom instances using Terraform using this easy to create and destroy K8s-EKS lab.
 
-![K8sLab-basic](./docs/K8sLab-basic1.png)
+![K8sLab-basic](K8sLab.drawio.png)
 
 ---
 
