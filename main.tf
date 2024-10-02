@@ -7,19 +7,19 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "${local.env}-main"
+    Name = "${var.env}-main"
   }
 }
 
 # CloudWatch log group for VPC flow logs
 resource "aws_cloudwatch_log_group" "flow_logs_group" {
-  name              = "${local.env}-flow-logs-group"
+  name              = "${var.env}-flow-logs-group"
   retention_in_days = 14  # Set the retention as needed
 }
 
 # IAM role for VPC flow logs
 resource "aws_iam_role" "flow_logs_role" {
-  name = "${local.env}-flow-logs-role"
+  name = "${var.env}-flow-logs-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -37,7 +37,7 @@ resource "aws_iam_role" "flow_logs_role" {
 
 # IAM policy for CloudWatch Logs
 resource "aws_iam_role_policy" "flow_logs_policy" {
-  name   = "${local.env}-flow-logs-policy"
+  name   = "${var.env}-flow-logs-policy"
   role   = aws_iam_role.flow_logs_role.id
 
   policy = jsonencode({
@@ -70,11 +70,11 @@ resource "aws_flow_log" "vpc_flow_log" {
 resource "aws_subnet" "public_subnet_az1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidr_az1
-  availability_zone       = local.azone1
+  availability_zone       = var.azone1
   map_public_ip_on_launch = true
   tags = {
-    Name                                      = "${local.env}-public-${local.azone1}"
-    "kubernetes.io/cluster/${local.eks_name}" = "owned"
+    Name                                      = "${var.env}-public-${var.azone1}"
+    "kubernetes.io/cluster/${var.eks_name}" = "owned"
     "kubernetes.io/role/elb"                  = "1"
   }
 }
@@ -83,10 +83,10 @@ resource "aws_subnet" "public_subnet_az1" {
 resource "aws_subnet" "private_subnet_az1" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidr_az1
-  availability_zone = local.azone1
+  availability_zone = var.azone1
   tags = {
-    Name                                      = "${local.env}-private-${local.azone1}"
-    "kubernetes.io/cluster/${local.eks_name}" = "owned"
+    Name                                      = "${var.env}-private-${var.azone1}"
+    "kubernetes.io/cluster/${var.eks_name}" = "owned"
     "kubernetes.io/role/internal-elb"         = "1"
   }
 }
@@ -95,10 +95,10 @@ resource "aws_subnet" "private_subnet_az1" {
 resource "aws_subnet" "public_subnet_az2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidr_az2
-  availability_zone       = local.azone2
+  availability_zone       = var.azone2
   map_public_ip_on_launch = true
   tags = {
-    Name = "${local.env}-public-${local.azone2}"
+    Name = "${var.env}-public-${var.azone2}"
   }
 }
 
@@ -106,9 +106,9 @@ resource "aws_subnet" "public_subnet_az2" {
 resource "aws_subnet" "private_subnet_az2" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidr_az2
-  availability_zone = local.azone2
+  availability_zone = var.azone2
   tags = {
-    Name = "${local.env}-private-${local.azone2}"
+    Name = "${var.env}-private-${var.azone2}"
   }
 }
 
@@ -116,7 +116,7 @@ resource "aws_subnet" "private_subnet_az2" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "${local.env}-igw"
+    Name = "${var.env}-igw"
   }
 }
 
@@ -124,7 +124,7 @@ resource "aws_eip" "nat" {
   domain = "vpc"
 
   tags = {
-    Name = "${local.env}-nat"
+    Name = "${var.env}-nat"
   }
 }
 
@@ -133,7 +133,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public_subnet_az1.id
 
   tags = {
-    Name = "${local.env}-nat"
+    Name = "${var.env}-nat"
   }
 
   depends_on = [
@@ -152,7 +152,7 @@ resource "aws_route_table" "private_rt" {
   }
 
   tags = {
-    Name = "${local.env}-private"
+    Name = "${var.env}-private"
   }
 }
 
@@ -166,7 +166,7 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name = "${local.env}-public"
+    Name = "${var.env}-public"
   }
 }
 
@@ -196,7 +196,7 @@ resource "aws_route_table_association" "public_azone2" {
 #   source = "./modules/roles"
 
 #   # Deploy the roles module if the flag is set to true
-#   count = local.deploy_roles_module ? 1 : 0
+#   count = var.deploy_roles_module ? 1 : 0
 # }
 
 # # Load the users module
@@ -204,5 +204,5 @@ resource "aws_route_table_association" "public_azone2" {
 #   source = "./modules/users"
 
 #   # Deploy the users module if the flag is set to true
-#   count = local.deploy_users_module ? 1 : 0
+#   count = var.deploy_users_module ? 1 : 0
 # }

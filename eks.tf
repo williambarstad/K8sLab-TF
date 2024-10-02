@@ -1,6 +1,6 @@
 # IAM Role for EKS Cluster
 resource "aws_iam_role" "eks" {
-  name = "${local.eks_name}-eks-cluster"
+  name = "${var.eks_name}-eks-cluster"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -22,8 +22,8 @@ resource "aws_iam_role" "eks" {
 
 # EKS Cluster
 resource "aws_eks_cluster" "eks" {
-  name     = "${local.eks_name}"
-  version  = local.eks_version
+  name     = "${var.eks_name}"
+  version  = var.eks_version
   role_arn = aws_iam_role.eks.arn
 
   vpc_config {
@@ -45,6 +45,6 @@ resource "aws_eks_cluster" "eks" {
 #   ]
 
   tags = {
-    Name = "${local.env}-${local.eks_name}"
+    Name = "${var.env}-${var.eks_name}"
   }
 }
