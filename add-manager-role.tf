@@ -5,7 +5,7 @@ data "aws_caller_identity" "current" {}
 # Create an IAM role named "eks_admin" for administering EKS
 # The "eks_admin" role allows EKS cluster administration by assuming this role.
 resource "aws_iam_role" "eks_admin" {
-  name = "${local.env}-${local.eks_name}-eks-admin"  # Name of the IAM role for the EKS admin.
+  name = "${var.env}-${var.eks_name}-eks-admin"  # Name of the IAM role for the EKS admin.
 
   # Policy that allows this role to be assumed by the current AWS identity.
   assume_role_policy = jsonencode({

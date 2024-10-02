@@ -14,10 +14,10 @@ data "aws_ami" "eks_ami" {
 
   filter {
     name   = "owner-id"
-    values = ["${local.account_id}"]  # This is the official AWS account ID for EKS AMIs
+    values = ["${var.account_id}"]  # This is the official AWS account ID for EKS AMIs
   }
 
-  owners = ["${local.account_id}"]  # Amazon's AWS account that owns EKS AMIs
+  owners = ["${var.account_id}"]  # Amazon's AWS account that owns EKS AMIs
 }
 
 
@@ -142,7 +142,7 @@ resource "aws_autoscaling_group" "eks_node_group" {
   }
 
   tag {
-    key                 = "k8s.io/cluster-autoscaler/${local.eks_name}"
+    key                 = "k8s.io/cluster-autoscaler/${var.eks_name}"
     value               = "owned"
     propagate_at_launch = true
   }

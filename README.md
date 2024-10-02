@@ -15,7 +15,7 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
 
 ## Prerequisites
 
-* Install **Terraform** and **Kubectl** on your local machine.
+* Install **Terraform** and **Kubectl** on your var machine.
 * Set up **AWS CLI** and configure your credentials:
   - Ensure you have `~/.aws/config` and `~/.aws/credentials` files set up properly.
   - You'll need an AWS account and an IAM user with sufficient permissions to create resources like EKS clusters, subnets, and VPCs.
@@ -31,15 +31,15 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
 
 2. **Create the following files**:
    
-   - **locals.tf** (example):
+   - **vars.tf** (example):
      ```hcl
-     locals {
+     vars {
         instance_profile      = "<PROFILE_NAME>"
         env                   = "dev"
         region                = "us-west-2"
         azone1                = "us-west-2a"
         azone2                = "us-west-2b"
-        eks_name              = "eks-${local.env}"
+        eks_name              = "eks-${var.env}"
         eks_version           = "1.30"
         node_instance_type    = "t3a.medium"
         desired_cluster_size  = 1
