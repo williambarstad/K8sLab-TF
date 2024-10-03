@@ -1,7 +1,8 @@
 
 # K8sLab-TF 
 
-Kubernetes lab with Terraform using this easy to create and destroy K8s-EKS lab.
+Kubernetes lab deployed with Terraform using this easy to create and destroy K8s-EKS lab.
+
 
 ![K8sLab-basic](K8sLab.drawio.png)
 
