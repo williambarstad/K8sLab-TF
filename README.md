@@ -42,12 +42,12 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
      ```hcl
       variable "instance_profile" {
          description = "The name of the instance profile"
-         default     = "williambarstad"
+         default     = "<PROFILE_NAME>"
       }
 
       variable "account_id" {
          description = "The AWS account ID"
-         default     = "602401143452"
+         default     = "<YOUR_ACCOUNT_ID>"
       }
 
       variable "env" {

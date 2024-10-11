@@ -1,6 +1,6 @@
 # IAM Role for EKS Worker Nodes
 resource "aws_iam_role" "nodes" {
-  name = "${var.env}-${var.eks_name}-eks-nodes"
+  name = "${var.env}-${local.eks_name}-eks-nodes"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
