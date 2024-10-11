@@ -28,11 +28,6 @@ variable "azone2" {
   default     = "us-west-2b"
 }
 
-variable "eks_name" {
-  description = "The name of the EKS cluster"
-  default     = "eks-changeme"
-}
-
 variable "eks_version" {
   description = "The version of EKS to deploy"
   default     = "1.31"

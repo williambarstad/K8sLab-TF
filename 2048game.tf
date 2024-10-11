@@ -1,8 +1,20 @@
-# provider "kubernetes" {
-#   host                   = aws_eks_cluster.eks.endpoint
-#   cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority.0.data)
-#   token                  = data.aws_eks_cluster_auth.eks.token
-# }
+# Fetch the details of your EKS cluster
+data "aws_eks_cluster" "eks" {
+  name = "eks-${var.env}" # Replace with your EKS cluster name
+}
+
+# Fetch the authentication token for the EKS cluster
+data "aws_eks_cluster_auth" "eks" {
+  name = data.aws_eks_cluster.eks.name
+}
+
+# Kubernetes provider configuration using EKS authentication
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.eks.token
+}
+
 
 data "aws_ami" "eks_ami" {
   most_recent = true
@@ -70,7 +82,7 @@ resource "kubernetes_service" "game_service" {
 
     port {
       protocol    = "TCP"
-      port        = 2048
+      port        = 80
       target_port = 2048
     }
 
@@ -142,9 +154,29 @@ resource "aws_autoscaling_group" "eks_node_group" {
   }
 
   tag {
-    key                 = "k8s.io/cluster-autoscaler/${var.eks_name}"
+    key                 = "k8s.io/cluster-autoscaler/${local.eks_name}"
     value               = "owned"
     propagate_at_launch = true
   }
 }
 
+# resource "kubernetes_ingress" "game_ingress" {
+#   metadata {
+#     name = "game-ingress"
+#   }
+
+#   spec {
+#     rule {
+#       host = "example.com"  # Replace with your domain or leave for external access
+
+#       http {
+#         path {
+#           backend {
+#             service_name = kubernetes_service.game_service.metadata[0].name
+#             service_port = 80
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
