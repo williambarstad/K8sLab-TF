@@ -233,9 +233,6 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
 
 ## Upcoming Enhancements
 
-*  HPA (Horizontal Pod Autoscaler)
-*  Cluster Autoscaler
-*  AWS Load Balancer
 *  Nginx Ingress Controller
 
 ## Tools Used in This Project
@@ -243,7 +240,7 @@ This project allows you to quickly set up a Kubernetes cluster on AWS EKS using 
 * **HashiCorp Terraform**
 * **Kubernetes**
 * **AWS EKS**
-* **Eraser**
+* **Drawio**
 * **Infracost**
 * **Copilot**
 * **ChatGPT**
